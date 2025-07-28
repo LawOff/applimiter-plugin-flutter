@@ -20,6 +20,11 @@ Future<bool> checkAndroidPermission()
 Future<void> requestAndroidPermission()
 Future<void> blockAndroidApps()
 Future<void> unBlockAndroidApps()
+
+// NEW: Separated blocking methods
+Future<void> selectAppsOnly()        // Select apps without blocking
+Future<void> blockSelectedApps()     // Block previously selected apps
+Future<void> unblockApps()          // Remove all restrictions
 ```
 
 🪪 Permissions Required

@@ -12,23 +12,28 @@ struct ContentView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ViewBuilder
-    func contentView() -> some View {
-        switch globalMethodCall {
-        case "selectAppsToDiscourage":
-            FamilyActivityPicker(selection: $model.selectionToDiscourage)
-                .onChange(of: model.selectionToDiscourage) { _ in
-                    model.setShieldRestrictions()
-                }
-        case "selectAppsToEncourage":
-            FamilyActivityPicker(selection: $model.selectionToEncourage)
-                .onChange(of: model.selectionToEncourage) { _ in
-                    MySchedule.setSchedule()
-                }
+        func contentView() -> some View {
+            switch globalMethodCall {
+            case "selectAppsToDiscourage":
+                FamilyActivityPicker(selection: $model.selectionToDiscourage)
+                    .onChange(of: model.selectionToDiscourage) { _ in
+                        model.setShieldRestrictions()
+                    }
+            case "selectAppsOnlyMode":
+                FamilyActivityPicker(selection: $model.selectionToDiscourage)
+                    .onChange(of: model.selectionToDiscourage) { _ in
+                        model.saveAppSelection() // Only save, don't block
+                    }
+            case "selectAppsToEncourage":
+                FamilyActivityPicker(selection: $model.selectionToEncourage)
+                    .onChange(of: model.selectionToEncourage) { _ in
+                        MySchedule.setSchedule()
+                    }
 
-        default:
-            Text("Default")
+            default:
+                Text("Default")
+            }
         }
-    }
 
     var body: some View {
         NavigationView {
@@ -44,6 +49,8 @@ struct ContentView: View {
                     switch globalMethodCall {
                     case "selectAppsToDiscourage":
                         model.setShieldRestrictions()
+                    case "selectAppsOnlyMode":
+                        model.saveAppSelection() // Only save selection
                     case "selectAppsToEncourage":
                         MySchedule.setSchedule()
                     default:

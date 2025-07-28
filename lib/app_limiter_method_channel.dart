@@ -16,6 +16,39 @@ class MethodChannelAppLimiter extends AppLimiterPlatform {
     return version;
   }
 
+  /// Opens app selection interface without applying restrictions
+  @override
+  Future<void> selectAppsOnly() async {
+    try {
+      await methodChannel.invokeMethod('selectAppsOnly');
+    } on PlatformException catch (e) {
+      debugPrint('Failed to open app selection: ${e.message}');
+      rethrow;
+    }
+  }
+
+  /// Blocks previously selected apps
+  @override
+  Future<void> blockSelectedApps() async {
+    try {
+      await methodChannel.invokeMethod('blockSelectedApps');
+    } on PlatformException catch (e) {
+      debugPrint('Failed to block selected apps: ${e.message}');
+      rethrow;
+    }
+  }
+
+  /// Removes all app restrictions
+  @override
+  Future<void> unblockApps() async {
+    try {
+      await methodChannel.invokeMethod('unblockApps');
+    } on PlatformException catch (e) {
+      debugPrint('Failed to unblock apps: ${e.message}');
+      rethrow;
+    }
+  }
+
   /// iOS-specific implementation for blocking and unblocking apps
   @override
   Future<void> blockAndUnblockIOSApp() async {

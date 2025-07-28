@@ -16,6 +16,37 @@ class AppLimiter {
     return AppLimiterPlatform.instance.getPlatformVersion();
   }
 
+  /// Opens app selection interface without immediately applying restrictions.
+  /// 
+  /// This allows users to select which apps should be available for blocking
+  /// without immediately blocking them. Use [blockSelectedApps] to activate
+  /// the restrictions later.
+  /// 
+  /// Throws a [PlatformException] if the operation fails.
+  Future<void> selectAppsOnly() {
+    return AppLimiterPlatform.instance.selectAppsOnly();
+  }
+
+  /// Blocks previously selected apps.
+  /// 
+  /// Applies restrictions to apps that were selected using [selectAppsOnly].
+  /// This enables the actual blocking functionality.
+  /// 
+  /// Throws a [PlatformException] if the operation fails.
+  Future<void> blockSelectedApps() {
+    return AppLimiterPlatform.instance.blockSelectedApps();
+  }
+
+  /// Removes all app restrictions.
+  /// 
+  /// Disables all active app blocking, allowing access to all previously
+  /// blocked applications.
+  /// 
+  /// Throws a [PlatformException] if the operation fails.
+  Future<void> unblockApps() {
+    return AppLimiterPlatform.instance.unblockApps();
+  }
+
   /// Toggles the block state of an iOS app.
   ///
   /// This method handles both blocking and unblocking operations for iOS apps.
