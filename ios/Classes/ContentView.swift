@@ -22,7 +22,9 @@ struct ContentView: View {
             case "selectAppsOnlyMode":
                 FamilyActivityPicker(selection: $model.selectionToDiscourage)
                     .onChange(of: model.selectionToDiscourage) { _ in
-                        model.saveAppSelection() // Only save, don't block
+                        model.saveAppSelection()
+                        // Optionally notify Flutter about the change
+                        print("Apps selection changed, new count: \(model.getSelectedAppsCount())")
                     }
             case "selectAppsToEncourage":
                 FamilyActivityPicker(selection: $model.selectionToEncourage)

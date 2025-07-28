@@ -98,4 +98,15 @@ class AppLimiter {
   Future<void> unblocAndroidApp() {
     return AppLimiterPlatform.instance.unblockAndroidApps();
   }
+
+  /// Gets the number of currently selected apps and categories.
+  /// 
+  /// Returns the total count of applications and categories that have been
+  /// selected for potential blocking. This count persists until new apps
+  /// are selected.
+  /// 
+  /// Returns 0 if no apps are selected or on error.
+  Future<int> getSelectedAppsCount() {
+    return AppLimiterPlatform.instance.getSelectedAppsCount();
+  }
 }

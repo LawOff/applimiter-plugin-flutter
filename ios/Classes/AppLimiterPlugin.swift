@@ -72,6 +72,14 @@ public class AppLimiterPlugin: NSObject, FlutterPlugin {
                 result(FlutterError(code: "UNSUPPORTED", message: "iOS 16+ required", details: nil))
             }
 
+        case "getSelectedAppsCount":
+            if #available(iOS 15.0, *) {
+                let count = MyModel.shared.getSelectedAppsCount()
+                result(count)
+            } else {
+                result(FlutterError(code: "UNSUPPORTED", message: "iOS 15+ required", details: nil))
+            }
+
         default:
             result(FlutterMethodNotImplemented)
         }

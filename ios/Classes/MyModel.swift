@@ -72,4 +72,12 @@ class MyModel: ObservableObject {
         
         isBlocking = false
     }
+    
+    /// Returns the total number of selected apps and categories
+    func getSelectedAppsCount() -> Int {
+        let appCount = selectionToDiscourage.applicationTokens.count
+        let categoryCount = selectionToDiscourage.categoryTokens.count
+        print("Selected apps count: \(appCount), categories: \(categoryCount)")
+        return appCount + categoryCount
+    }
 }

@@ -116,4 +116,16 @@ class MethodChannelAppLimiter extends AppLimiterPlatform {
       debugPrint('Failed to unblock Android app: ${e.message}');
     }
   }
+
+  /// Gets the number of currently selected apps
+  @override
+  Future<int> getSelectedAppsCount() async {
+    try {
+      final result = await methodChannel.invokeMethod<int>('getSelectedAppsCount');
+      return result ?? 0;
+    } on PlatformException catch (e) {
+      debugPrint('Failed to get selected apps count: ${e.message}');
+      return 0;
+    }
+  }
 }

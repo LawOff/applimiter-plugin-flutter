@@ -59,4 +59,7 @@ abstract class AppLimiterPlatform extends PlatformInterface {
 
   /// Removes all app restrictions
   Future<void> unblockApps();
+
+  /// Gets the number of currently selected apps
+  Future<int> getSelectedAppsCount();
 }
