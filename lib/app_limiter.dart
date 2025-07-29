@@ -23,7 +23,7 @@ class AppLimiter {
   /// the restrictions later.
   /// 
   /// Throws a [PlatformException] if the operation fails.
-  Future<void> selectAppsOnly() {
+  Future<int> selectAppsOnly() {
     return AppLimiterPlatform.instance.selectAppsOnly();
   }
 
