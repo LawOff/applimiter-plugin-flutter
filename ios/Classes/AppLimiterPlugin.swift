@@ -126,30 +126,64 @@ public class AppLimiterPlugin: NSObject, FlutterPlugin {
         }
     }
 
+    /// Opens app selection interface without applying restrictions
     @available(iOS 16.0, *)
-        private func selectAppsOnly(result: @escaping FlutterResult) {
-            let status = AuthorizationCenter.shared.authorizationStatus
-            
-            if status == .approved {
-                presentAppSelectionOnly()
-                result(nil)
-            } else {
-                Task {
-                    do {
-                        try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
-                        let newStatus = AuthorizationCenter.shared.authorizationStatus
-                        if newStatus == .approved {
-                            presentAppSelectionOnly()
-                            result(nil)
-                        } else {
-                            result(FlutterError(code: "PERMISSION_DENIED", message: "User denied permission", details: nil))
+    private func selectAppsOnly(result: @escaping FlutterResult) {
+        let status = AuthorizationCenter.shared.authorizationStatus
+        
+        if status == .approved {
+            presentAppSelectionOnly { selectedCount in
+                result(selectedCount) // Retourne le nombre d'apps sélectionnées
+            }
+        } else {
+            Task {
+                do {
+                    try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
+                    let newStatus = AuthorizationCenter.shared.authorizationStatus
+                    if newStatus == .approved {
+                        presentAppSelectionOnly { selectedCount in
+                            result(selectedCount)
                         }
-                    } catch {
-                        result(FlutterError(code: "AUTH_ERROR", message: "Failed to request authorization", details: error.localizedDescription))
+                    } else {
+                        result(FlutterError(code: "PERMISSION_DENIED", message: "User denied permission", details: nil))
                     }
+                } catch {
+                    result(FlutterError(code: "AUTH_ERROR", message: "Failed to request authorization", details: error.localizedDescription))
                 }
             }
         }
+    }
+    
+    /// Presents app selection interface that only saves selection
+    private func presentAppSelectionOnly(completion: @escaping (Int) -> Void) {
+        if #available(iOS 13.0, *) {
+            guard let rootVC = UIApplication.shared.delegate?.window??.rootViewController else {
+                print("Root view controller not found")
+                completion(0)
+                return
+            }
+    
+            globalMethodCall = "selectAppsOnlyMode"
+            let vc: UIViewController
+    
+            if #available(iOS 15.0, *) {
+                let contentView = ContentView()
+                    .environmentObject(MyModel.shared)
+                    .environmentObject(ManagedSettingsStore())
+                    .onDisappear {
+                        // Quand l'interface se ferme, retourner le nombre d'apps
+                        let count = MyModel.shared.getSelectedAppsCount()
+                        completion(count)
+                    }
+                
+                vc = UIHostingController(rootView: contentView)
+            } else {
+                vc = UIViewController()
+                completion(0)
+            }
+            rootVC.present(vc, animated: true, completion: nil)
+        }
+    }
 
         /// Blocks previously selected apps
         @available(iOS 16.0, *)
@@ -170,32 +204,6 @@ public class AppLimiterPlugin: NSObject, FlutterPlugin {
                 result(nil)
             } else {
                 result(FlutterError(code: "UNSUPPORTED", message: "iOS 15+ required", details: nil))
-            }
-        }
-
-        /// Presents app selection interface that only saves selection
-        private func presentAppSelectionOnly() {
-            if #available(iOS 13.0, *) {
-                guard let rootVC = UIApplication.shared.delegate?.window??.rootViewController else {
-                    print("Root view controller not found")
-                    return
-                }
-
-                globalMethodCall = "selectAppsOnlyMode"
-                let vc: UIViewController
-
-                if #available(iOS 15.0, *) {
-                    vc = UIHostingController(
-                        rootView: ContentView()
-                            .environmentObject(MyModel.shared)
-                            .environmentObject(ManagedSettingsStore())
-                    )
-                } else {
-                    vc = UIViewController()
-                }
-                rootVC.present(vc, animated: true, completion: nil)
-            } else {
-                print("This feature requires iOS 13 or later")
             }
         }
 
