@@ -52,7 +52,7 @@ abstract class AppLimiterPlatform extends PlatformInterface {
   Future<void> unblockAndroidApps();
 
   /// Opens app selection interface without applying restrictions
-  Future<void> selectAppsOnly();
+  Future<int> selectAppsOnly();
 
   /// Blocks previously selected apps
   Future<void> blockSelectedApps();
