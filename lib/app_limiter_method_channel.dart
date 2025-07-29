@@ -18,12 +18,13 @@ class MethodChannelAppLimiter extends AppLimiterPlatform {
 
   /// Opens app selection interface without applying restrictions
   @override
-  Future<void> selectAppsOnly() async {
+  Future<int> selectAppsOnly() async {
     try {
-      await methodChannel.invokeMethod('selectAppsOnly');
+      final result = await methodChannel.invokeMethod<int>('selectAppsOnly');
+      return result ?? 0;
     } on PlatformException catch (e) {
       debugPrint('Failed to open app selection: ${e.message}');
-      rethrow;
+      return 0;
     }
   }
 
