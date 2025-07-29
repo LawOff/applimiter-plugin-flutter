@@ -48,6 +48,13 @@ class MyModel: ObservableObject {
         // Selection is automatically saved in selectionToDiscourage
         // No restrictions applied here
     }
+
+    /// Get the number of selected apps
+    func getSelectedAppsCount() -> Int {
+        let appCount = selectionToDiscourage.applicationTokens.count
+        let categoryCount = selectionToDiscourage.categoryTokens.count
+        return appCount + categoryCount
+    }
     
     /// New method: Enable blocking for previously selected apps
     func enableShieldRestrictions() {
